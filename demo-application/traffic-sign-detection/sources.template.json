@@ -1,0 +1,41 @@
+[
+  {
+    "name": "gtsdb",
+    "url": "https://your-source-url/gtsdb.zip",
+    "type": "zip",
+    "labels_format": "csv",
+    "annotations_csv": "gt.csv",
+    "class_map": {
+      "17": 0,
+      "1": 1,
+      "2": 2,
+      "34": 3,
+      "25": 4,
+      "38": 5
+    },
+    "csv_schema": {
+      "filename": "filename",
+      "class_id": "class_id",
+      "xmin": "xmin",
+      "ymin": "ymin",
+      "xmax": "xmax",
+      "ymax": "ymax",
+      "width": "width",
+      "height": "height"
+    }
+  },
+  {
+    "name": "custom_yolo_sidecar",
+    "url": "https://your-source-url/custom_signs.zip",
+    "type": "zip",
+    "labels_format": "yolo",
+    "class_map": {
+      "0": 0,
+      "1": 1,
+      "2": 2,
+      "3": 3,
+      "4": 4,
+      "5": 5
+    }
+  }
+]

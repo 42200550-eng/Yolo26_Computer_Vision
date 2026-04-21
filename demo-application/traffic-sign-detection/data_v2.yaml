@@ -1,0 +1,15 @@
+# Balanced dataset for YOLO26
+path: datasets_v2
+train: images/train
+val: images/val
+test: images/test
+
+nc: 6
+
+names:
+  0: No_entry
+  1: No_parking
+  2: No_parking_stopping
+  3: No_turn_left
+  4: Go_slowdown
+  5: Keep_going
