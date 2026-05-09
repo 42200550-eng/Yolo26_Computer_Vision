@@ -6,6 +6,11 @@ from pathlib import Path
 import yaml
 from ultralytics import YOLO
 
+try:
+    import torch
+except ImportError:  # Optional dependency for CUDA sync
+    torch = None
+
 
 def safe_metric_value(results, attr: str) -> float | None:
     obj = getattr(results, "box", None)
@@ -102,12 +107,15 @@ def benchmark_speed(
     warmup_paths = image_paths[: min(len(image_paths), warmup)]
     for p in warmup_paths:
         model.predict(source=str(p), imgsz=imgsz, device=device, verbose=False)
+    _sync_device(device)
 
     measured_paths = image_paths[len(warmup_paths):] or image_paths
 
+    _sync_device(device)
     start = time.perf_counter()
     for p in measured_paths:
         model.predict(source=str(p), imgsz=imgsz, device=device, verbose=False)
+    _sync_device(device)
     elapsed = time.perf_counter() - start
 
     fps = len(measured_paths) / elapsed if elapsed > 0 else 0.0
@@ -119,6 +127,27 @@ def benchmark_speed(
         "fps": fps,
         "avg_ms": avg_ms,
     }
+
+
+def _sync_device(device: str) -> None:
+    if torch is None:
+        return
+    device_lower = str(device).lower()
+    if "cpu" in device_lower:
+        return
+    if torch.cuda.is_available():
+        torch.cuda.synchronize()
+
+
+def print_comparison_table(baseline: dict, candidate: dict) -> None:
+    print(f"\n{'Class':<20} {'Baseline AP50':>14} {'Candidate AP50':>15} {'Delta':>8}")
+    print("-" * 60)
+    for b, c in zip(baseline.get("per_class", []), candidate.get("per_class", [])):
+        b_ap = b.get("ap50", 0.0) or 0.0
+        c_ap = c.get("ap50", 0.0) or 0.0
+        delta = c_ap - b_ap
+        arrow = "^" if delta > 0 else "v" if delta < 0 else "="
+        print(f"{b['class_name']:<20} {b_ap:>13.1%} {c_ap:>14.1%} {delta:>+7.1%} {arrow}")
 
 
 def main() -> None:
@@ -154,6 +183,7 @@ def main() -> None:
 
     print("[INFO] Evaluation completed")
     print(f"[INFO] Report: {report_path}")
+    print_comparison_table(baseline_metrics, candidate_metrics)
 
 
 if __name__ == "__main__":

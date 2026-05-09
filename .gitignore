@@ -1,0 +1,18 @@
+# Data and generated artifacts
+/datasets_rf/
+/datasets/
+/runs/
+
+# Demo application datasets and outputs
+/demo-application/traffic-sign-detection/datasets/
+/demo-application/traffic-sign-detection/datasets_v2/
+/demo-application/traffic-sign-detection/datasets_v3/
+/demo-application/traffic-sign-detection/audit_plots/
+/demo-application/traffic-sign-detection/data_audit_report_*.json
+/demo-application/traffic-sign-detection/datasets/**/*.cache
+
+# Videos and model weights
+*.mp4
+*.avi
+*.mkv
+*.pt

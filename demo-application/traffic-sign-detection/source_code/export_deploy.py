@@ -7,7 +7,12 @@ from ultralytics import YOLO
 
 def export_model(model_path: str, fmt: str, imgsz: int, device: str) -> str:
     model = YOLO(model_path)
-    exported = model.export(format=fmt, imgsz=imgsz, device=device)
+    kwargs = {"format": fmt, "imgsz": imgsz, "device": device}
+    if fmt == "onnx":
+        kwargs["simplify"] = True
+    if fmt == "engine":
+        kwargs["half"] = True
+    exported = model.export(**kwargs)
     return str(exported)
 
 

@@ -10,6 +10,7 @@ def train_yolo26_optimized(
     imgsz: int,
     batch: int,
     device: str,
+    resume: str,
 ) -> None:
     model = YOLO(model_path)
     model.train(
@@ -18,6 +19,7 @@ def train_yolo26_optimized(
         epochs=epochs,
         batch=batch,
         device=device,
+        resume=resume or False,
         workers=4,
         patience=30,
         optimizer="auto",
@@ -53,6 +55,7 @@ def main() -> None:
     parser.add_argument("--imgsz", type=int, default=800, help="Image size")
     parser.add_argument("--batch", type=int, default=16, help="Batch size")
     parser.add_argument("--device", default="0", help="Device id or cpu")
+    parser.add_argument("--resume", default="", help="Resume from last checkpoint path")
     args = parser.parse_args()
 
     train_yolo26_optimized(
@@ -63,6 +66,7 @@ def main() -> None:
         imgsz=args.imgsz,
         batch=args.batch,
         device=args.device,
+        resume=args.resume,
     )
 
 

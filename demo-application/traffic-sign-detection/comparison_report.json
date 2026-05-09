@@ -1,0 +1,132 @@
+{
+  "baseline": {
+    "model": "c:\\Users\\South Saigon Systems\\.gemini\\antigravity\\scratch\\Yolo26_Computer_Vision\\runs\\detect\\yolo26s_traffic_v1\\weights\\best.pt",
+    "save_dir": "C:\\Users\\South Saigon Systems\\.gemini\\antigravity\\scratch\\Yolo26_Computer_Vision\\runs\\detect\\val",
+    "map50": 0.9290198204438193,
+    "map50_95": 0.8704091613732408,
+    "mp": 0.8221901922124655,
+    "mr": 0.9445571894996235,
+    "per_class": [
+      {
+        "class_id": 0,
+        "class_name": "No_entry",
+        "precision": 0.922542044410294,
+        "recall": 0.9646643109540636,
+        "ap50": 0.9802422643855702,
+        "ap50_95": 0.9162192802728072
+      },
+      {
+        "class_id": 1,
+        "class_name": "No_parking",
+        "precision": 0.8669368364997139,
+        "recall": 1.0,
+        "ap50": 0.9835938330163359,
+        "ap50_95": 0.9213655861832836
+      },
+      {
+        "class_id": 2,
+        "class_name": "No_parking_stopping",
+        "precision": 0.9595560381575315,
+        "recall": 0.9968885613086897,
+        "ap50": 0.9924027373011512,
+        "ap50_95": 0.9586472225218046
+      },
+      {
+        "class_id": 3,
+        "class_name": "No_turn_left",
+        "precision": 0.9839510292114904,
+        "recall": 1.0,
+        "ap50": 0.9948666666666667,
+        "ap50_95": 0.9356196609371052
+      },
+      {
+        "class_id": 4,
+        "class_name": "Go_slowdown",
+        "precision": 0.26818433696264277,
+        "recall": 0.75,
+        "ap50": 0.645,
+        "ap50_95": 0.60275
+      },
+      {
+        "class_id": 5,
+        "class_name": "Keep_going",
+        "precision": 0.9319708680331208,
+        "recall": 0.955790264734987,
+        "ap50": 0.9780134212931911,
+        "ap50_95": 0.8878532183244433
+      }
+    ]
+  },
+  "candidate": {
+    "model": "c:\\Users\\South Saigon Systems\\.gemini\\antigravity\\scratch\\Yolo26_Computer_Vision\\runs\\detect\\yolo26s_traffic_final\\weights\\best.pt",
+    "save_dir": "C:\\Users\\South Saigon Systems\\.gemini\\antigravity\\scratch\\Yolo26_Computer_Vision\\runs\\detect\\val-2",
+    "map50": 0.9026368197282976,
+    "map50_95": 0.8471633072930296,
+    "mp": 0.8525011548293082,
+    "mr": 0.9555459025731059,
+    "per_class": [
+      {
+        "class_id": 0,
+        "class_name": "No_entry",
+        "precision": 0.9735414841884764,
+        "recall": 0.9101273265147967,
+        "ap50": 0.9837590784882276,
+        "ap50_95": 0.9162502031734994
+      },
+      {
+        "class_id": 1,
+        "class_name": "No_parking",
+        "precision": 0.9241108815225892,
+        "recall": 0.9516129032258065,
+        "ap50": 0.9752116727945762,
+        "ap50_95": 0.9002445256182641
+      },
+      {
+        "class_id": 2,
+        "class_name": "No_parking_stopping",
+        "precision": 0.9736375777302156,
+        "recall": 1.0,
+        "ap50": 0.9918726687632562,
+        "ap50_95": 0.9324429550140078
+      },
+      {
+        "class_id": 3,
+        "class_name": "No_turn_left",
+        "precision": 0.9865472321182391,
+        "recall": 0.9910424088679325,
+        "ap50": 0.9947333333333334,
+        "ap50_95": 0.9362445839108868
+      },
+      {
+        "class_id": 4,
+        "class_name": "Go_slowdown",
+        "precision": 0.3293374740362524,
+        "recall": 0.9835170803995412,
+        "ap50": 0.4949999999999999,
+        "ap50_95": 0.49499999999999994
+      },
+      {
+        "class_id": 5,
+        "class_name": "Keep_going",
+        "precision": 0.9278322793800761,
+        "recall": 0.8969756964305587,
+        "ap50": 0.9752441649903925,
+        "ap50_95": 0.9027975760415193
+      }
+    ]
+  },
+  "speed_baseline": {
+    "images_total": 200,
+    "images_warmup": 10,
+    "images_measured": 190,
+    "fps": 27.107095139483878,
+    "avg_ms": 36.890710526315736
+  },
+  "speed_candidate": {
+    "images_total": 200,
+    "images_warmup": 10,
+    "images_measured": 190,
+    "fps": 23.40192676192099,
+    "avg_ms": 42.73152421052672
+  }
+}

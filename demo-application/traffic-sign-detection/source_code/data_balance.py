@@ -163,14 +163,19 @@ def oversample_minority(
     min_instances: int,
     seed: int,
     num_classes: int,
+    prefer_single: bool,
 ) -> Counter:
     random.seed(seed)
     current = Counter(cls_counter)
     by_class = defaultdict(list)
+    by_class_single = defaultdict(list)
 
     for stem, classes in image_to_classes.items():
         for c in classes:
             by_class[c].append(stem)
+        if len(classes) == 1:
+            only_cls = next(iter(classes))
+            by_class_single[only_cls].append(stem)
 
     for cls_id in range(num_classes):
         count = current.get(cls_id, 0)
@@ -178,6 +183,8 @@ def oversample_minority(
             continue
 
         candidates = by_class.get(cls_id, [])
+        if prefer_single and by_class_single.get(cls_id):
+            candidates = by_class_single[cls_id]
         if not candidates:
             continue
 
@@ -201,7 +208,9 @@ def oversample_minority(
             shutil.copy2(src_lb, out_lbl)
 
             labels = parse_labels(src_lb)
-            current[cls_id] += sum(1 for c, *_ in labels if c == cls_id)
+            for c, *_ in labels:
+                if c == cls_id:
+                    current[c] += 1
 
     return current
 
@@ -217,6 +226,19 @@ def main() -> None:
     parser.add_argument("--val-ratio", type=float, default=0.2, help="Val ratio when creating splits from train")
     parser.add_argument("--test-ratio", type=float, default=0.1, help="Test ratio when creating splits from train")
     parser.add_argument("--ensure-splits", action="store_true", help="Ensure val/test exist in output dataset")
+    parser.add_argument(
+        "--prefer-single",
+        dest="prefer_single",
+        action="store_true",
+        help="Prefer single-class images when oversampling",
+    )
+    parser.add_argument(
+        "--no-prefer-single",
+        dest="prefer_single",
+        action="store_false",
+        help="Allow multi-class images when oversampling",
+    )
+    parser.set_defaults(prefer_single=True)
     args = parser.parse_args()
 
     cfg = load_yaml(Path(args.data).resolve())
@@ -245,9 +267,8 @@ def main() -> None:
                 out_root / "images" / "train",
                 out_root / "labels" / "train",
             )
-            if args.ensure_splits or args.split == "all":
-                copy_base_dataset(src_val_img, src_val_lbl, out_root / "images" / "val", out_root / "labels" / "val")
-                copy_base_dataset(src_test_img, src_test_lbl, out_root / "images" / "test", out_root / "labels" / "test")
+            copy_base_dataset(src_val_img, src_val_lbl, out_root / "images" / "val", out_root / "labels" / "val")
+            copy_base_dataset(src_test_img, src_test_lbl, out_root / "images" / "test", out_root / "labels" / "test")
         else:
             stems = list_stems(source_train_lbl)
             train_stems, val_stems, test_stems = stratified_split_stems(
@@ -258,9 +279,8 @@ def main() -> None:
                 seed=args.seed,
             )
             copy_stems(source_train_img, source_train_lbl, out_root / "images" / "train", out_root / "labels" / "train", train_stems)
-            if args.ensure_splits or args.split == "all":
-                copy_stems(source_train_img, source_train_lbl, out_root / "images" / "val", out_root / "labels" / "val", val_stems)
-                copy_stems(source_train_img, source_train_lbl, out_root / "images" / "test", out_root / "labels" / "test", test_stems)
+            copy_stems(source_train_img, source_train_lbl, out_root / "images" / "val", out_root / "labels" / "val", val_stems)
+            copy_stems(source_train_img, source_train_lbl, out_root / "images" / "test", out_root / "labels" / "test", test_stems)
 
         train_lbl_out = out_root / "labels" / "train"
         train_img_out = out_root / "images" / "train"
@@ -275,6 +295,7 @@ def main() -> None:
             min_instances=args.min_instances,
             seed=args.seed,
             num_classes=int(cfg.get("nc", 6)),
+            prefer_single=args.prefer_single,
         )
     else:
         src_img = resolve(root, cfg.get("val", "images/val"))

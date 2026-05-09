@@ -17,7 +17,16 @@ def auto_tune(weights_path: str, data_yaml: str, imgsz: int, device: str, epochs
     )
 
 
-def train_final(model_path: str, data_yaml: str, cfg_path: str, run_name: str, epochs: int, imgsz: int, device: str) -> None:
+def train_final(
+    model_path: str,
+    data_yaml: str,
+    cfg_path: str,
+    run_name: str,
+    epochs: int,
+    imgsz: int,
+    device: str,
+    resume: str,
+) -> None:
     model = YOLO(model_path)
     cfg_file = Path(cfg_path)
     if not cfg_file.exists():
@@ -28,6 +37,15 @@ def train_final(model_path: str, data_yaml: str, cfg_path: str, run_name: str, e
 
     scalar_hyps = {k: v for k, v in raw_hyps.items() if isinstance(v, (int, float, bool, str))}
 
+    forced_overrides = {
+        "fliplr": 0.0,
+        "flipud": 0.0,
+        "copy_paste": 0.3,
+        "cos_lr": True,
+        "warmup_epochs": 5,
+    }
+    scalar_hyps.update(forced_overrides)
+
     model.train(
         data=data_yaml,
         epochs=epochs,
@@ -35,6 +53,7 @@ def train_final(model_path: str, data_yaml: str, cfg_path: str, run_name: str, e
         device=device,
         name=run_name,
         patience=40,
+        resume=resume or False,
         **scalar_hyps,
     )
 
@@ -52,6 +71,7 @@ def main() -> None:
     parser.add_argument("--tune-epochs", type=int, default=50, help="Epochs per tune iteration")
     parser.add_argument("--iterations", type=int, default=100, help="Tune iterations")
     parser.add_argument("--final-epochs", type=int, default=200, help="Final training epochs")
+    parser.add_argument("--resume", default="", help="Resume from last checkpoint path")
     args = parser.parse_args()
 
     if args.mode == "tune":
@@ -72,6 +92,7 @@ def main() -> None:
             epochs=args.final_epochs,
             imgsz=args.imgsz,
             device=args.device,
+            resume=args.resume,
         )
 
 
